@@ -488,7 +488,7 @@ function generateScheduleSlotDescription(slot)
 
 function courseInSameFolder(course1, course2)
 {
-  return false
+  return (course1.folder == course2.folder)
 }
 
 function coursesMutuallyExclusive(course1, course2)
@@ -901,8 +901,14 @@ function createCourseEntity(course, attrs)
   const folderID = document.createElement("input");
   folderID.setAttribute("type", "text");
   folderID.classList.add("course-box-folder-id");
-  // folderID.classList.add("star-visible");
-  folderID.addEventListener("click",catchEvent);
+  // if(course.folder != null){
+    folderID.text = "Banana"//course.folder
+  // }
+  folderID.addEventListener("change",(id) => 
+  {
+    course.folder = id.srcElement.value
+    updateSchedule();
+  });
   listItemContent.appendChild(folderID);
 
   const removeButton = document.createElement("i");
@@ -1387,6 +1393,7 @@ function addCourse(course)
   course = deepCopy(course);
   course.selected = true;
   course.starred = false;
+  course.folder = null;
   gSelectedCourses.push(course);
   handleSelectedCoursesUpdate();
 }
