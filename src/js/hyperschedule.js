@@ -486,6 +486,11 @@ function generateScheduleSlotDescription(slot)
     timeStringTo12HourString(slot.scheduleEndTime) + " at " + slot.scheduleLocation;
 }
 
+function courseInSameFolder(course1, course2)
+{
+  return false
+}
+
 function coursesMutuallyExclusive(course1, course2)
 {
   return arraysEqual(course1.courseMutualExclusionKey,
@@ -557,7 +562,7 @@ function computeSchedule(courses)
     for (let existingCourse of schedule)
     {
       if (coursesMutuallyExclusive(course, existingCourse) ||
-          coursesConflict(course, existingCourse))
+          coursesConflict(course, existingCourse) || courseInSameFolder(course, existingCourse))
       {
         conflicts = true;
         break;
@@ -892,6 +897,13 @@ function createCourseEntity(course, attrs)
     addButton.addEventListener("click", catchEvent);
     listItemContent.appendChild(addButton);
   }
+
+  const folderID = document.createElement("input");
+  folderID.setAttribute("type", "text");
+  folderID.classList.add("course-box-folder-id");
+  // folderID.classList.add("star-visible");
+  folderID.addEventListener("click",catchEvent);
+  listItemContent.appendChild(folderID);
 
   const removeButton = document.createElement("i");
   removeButton.classList.add("course-box-button");
