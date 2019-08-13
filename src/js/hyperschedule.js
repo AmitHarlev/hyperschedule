@@ -901,9 +901,9 @@ function createCourseEntity(course, attrs)
   const folderID = document.createElement("input");
   folderID.setAttribute("type", "text");
   folderID.classList.add("course-box-folder-id");
-  // if(course.folder != null){
-    folderID.text = "Banana"//course.folder
-  // }
+  if(course.folder != null){
+    folderID.value = course.folder
+  }
   folderID.addEventListener("change",(id) => 
   {
     course.folder = id.srcElement.value
