@@ -952,6 +952,7 @@ function createFolderEntity(folder, attrs)
 
   const listItem = document.createElement("li");
   listItem.classList.add("course-box");
+  listItem.id = "folder";
 
   const listItemContent = document.createElement("div");
   listItemContent.classList.add("course-box-content");
@@ -995,6 +996,14 @@ function createFolderEntity(folder, attrs)
   containedCourses.classList.add("course-box-content");
   containedCourses.classList.add("folder-list");
   listItem.appendChild(containedCourses);
+
+  containedCourses.addEventListener("sortupdate", readSelectedCoursesList);
+  containedCourses.addEventListener("sortstart", () => {
+    gCurrentlySorting = true;
+  });
+  containedCourses.addEventListener("sortstop", () => {
+    gCurrentlySorting = false;
+  });
   
   if (idx !== undefined)
   {
@@ -1525,6 +1534,23 @@ function readSelectedCoursesList()
       alert("An internal error occurred. This is bad.");
       updateSelectedCoursesList();
       return;
+    }
+    if (entity.lastChild.nodeName == "UL")
+    {
+      for (let subentity of entity.lastChild.children)
+      {
+        const idx = parseInt(subentity.getAttribute("data-course-index"), 10);
+        if (!isNaN(idx) && idx >= 0 && idx < gSelectedCourses.length)
+        {
+          newSelectedCourses.push(gSelectedCourses[idx]);
+        }
+        else
+        {
+          alert("An internal error occurred. This is bad.");
+          updateSelectedCoursesList();
+          return;
+        }
+      }
     }
   }
   gSelectedCourses = newSelectedCourses;
