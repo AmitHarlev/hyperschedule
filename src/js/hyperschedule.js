@@ -661,6 +661,12 @@ function attachListeners()
   sortable(".sortable-list", {
     forcePlaceholderSize: true,
     placeholder: createCourseEntity("placeholder").outerHTML,
+    acceptFrom: '.folder-list'
+  });
+  sortable(".folder-list", {
+    forcePlaceholderSize: true,
+    placeholder: createCourseEntity("placeholder").outerHTML,
+    acceptFrom: '.sortable-list'
   });
   printButton.addEventListener("click", downloadPDF);
   addFolderButton.addEventListener("click",addFolder);
@@ -939,18 +945,18 @@ function createCourseEntity(course, attrs)
   return listItem;
 }
 
-function createFolderEntity(course, attrs)
+function createFolderEntity(folder, attrs)
 {
   attrs = attrs || {};
   const idx = attrs.idx;
 
-  const listItem = document.createElement("ul");
+  const listItem = document.createElement("li");
   listItem.classList.add("course-box");
 
   const listItemContent = document.createElement("div");
   listItemContent.classList.add("course-box-content");
   
-  // listItemContent.style["background-color"] = getCourseColor(course);
+  listItemContent.style["background-color"] = 'grey'
  
   listItem.appendChild(listItemContent);
 
@@ -958,17 +964,17 @@ function createFolderEntity(course, attrs)
   textBox.classList.add("course-box-text");
   listItemContent.appendChild(textBox);
 
-  const courseNameNode = document.createTextNode(course.folder);
+  const courseNameNode = document.createTextNode(folder.folder);
   textBox.appendChild(courseNameNode);
 
   const folderID = document.createElement("input");
   folderID.setAttribute("type", "text");
   folderID.classList.add("course-box-folder-id");
-  folderID.value = course.folder
+  folderID.value = folder.folder
   
   folderID.addEventListener("change",(id) => 
   {
-    course.folder = id.srcElement.value
+    folder.folder = id.srcElement.value
     updateSelectedCoursesList();
     updateSchedule();
   });
@@ -980,10 +986,15 @@ function createFolderEntity(course, attrs)
   removeButton.classList.add("icon");
   removeButton.classList.add("ion-close");
   removeButton.addEventListener("click", () => {
-    removeCourse(course);
+    removeCourse(folder);
   });
   removeButton.addEventListener("click", catchEvent);
   listItemContent.appendChild(removeButton);
+
+  const containedCourses = document.createElement("ul");
+  containedCourses.classList.add("course-box-content");
+  containedCourses.classList.add("folder-list");
+  listItem.appendChild(containedCourses);
   
   if (idx !== undefined)
   {
@@ -1193,12 +1204,8 @@ function updateSelectedCoursesList()
       }
       folderEntity = createFolderEntity(course, { idx });
       currentFolder = course.folder;
-      if(idx == gSelectedCoursesAndFolders.length-1){
-        selectedCoursesList.appendChild(folderEntity);
-        currentFolder = null;
-      }
     } else if (course.folder && course.folder == currentFolder) {
-      folderEntity.appendChild(createCourseEntity(course, { idx }));
+      folderEntity.lastChild.appendChild(createCourseEntity(course, { idx }));
     } else {
       if(currentFolder != null){
         selectedCoursesList.appendChild(folderEntity)
@@ -1206,8 +1213,13 @@ function updateSelectedCoursesList()
       }
       selectedCoursesList.appendChild(createCourseEntity(course, { idx }));
     }
+    if(currentFolder != null && idx == gSelectedCoursesAndFolders.length-1){
+      selectedCoursesList.appendChild(folderEntity);
+      currentFolder = null;
+    }
   }
   sortable(".sortable-list");
+  sortable(".folder-list");
 }
 
 function updateSchedule()
@@ -1484,9 +1496,9 @@ function addCourse(course)
 function addFolder()
 {
   let folder = {
-    selected: true,
+    selected: false,
     starred: false,
-    folder: "Folder 1"
+    folder: "1"
   };
   gSelectedCourses.push(folder);
   handleSelectedCoursesUpdate();
