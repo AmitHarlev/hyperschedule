@@ -53,7 +53,6 @@ const importExportCopyButton = document.getElementById("import-export-copy-butto
 
 // Persistent data.
 let gApiData = null;
-let gSelectedCourses = [];
 let gSelectedCoursesAndFolders = [];
 let gScheduleTabSelected = false;
 let gShowClosedCourses = true;
@@ -627,7 +626,7 @@ function courseAlreadyAdded(course)
 {
   return _.some(selectedCourse => {
     return selectedCourse.courseCode === course.courseCode;
-  }, gSelectedCourses);
+  }, gSelectedCoursesAndFolders);
 }
 
 /// API retrieval
@@ -908,18 +907,42 @@ function createCourseEntity(course, attrs)
     listItemContent.appendChild(addButton);
   }
 
-  const folderID = document.createElement("input");
-  folderID.setAttribute("type", "text");
-  folderID.classList.add("folder-box-name");
-  folderID.value = course.folder
+  const folderButtonContainer = document.createElement("div");
+  folderButtonContainer.classList.add("dropdown");
+
+  const folderButton = document.createElement("button");
+  folderButton.setAttribute("type","button");
+  folderButton.setAttribute("data-toggle","dropdown");
+  folderButtonContainer.classList.add("course-box-folder-button");
+  folderButton.classList.add("dropdown-toggle");
+
+  folderButtonContainer.appendChild(folderButton);
+
+  const folderIcon = document.createElement("i");
+  folderIcon.classList.add("icon");
+  folderIcon.classList.add("ion-folder");
+
+  folderButton.appendChild(folderIcon)
+
+  const folderButtonDropdown = document.createElement("div");
+  folderButtonDropdown.classList.add("dropdown-menu");
+
+  const temp = document.createElement("a");
+  temp.classList.add("dropdown-item");
+  temp.appendChild(document.createTextNode("banana"));
   
-  folderID.addEventListener("change",(id) => 
+  folderButtonDropdown.appendChild(temp);
+
+  folderButtonContainer.appendChild(folderButtonDropdown);
+
+  folderButton.addEventListener("click",() => 
   {
-    course.folder = id.srcElement.value;
-    updateSelectedCoursesList();
-    updateSchedule();
+    // course.folder = id.srcElement.value;
+    // updateSelectedCoursesList();
+    // updateSchedule();
   });
-  listItemContent.appendChild(folderID);
+
+  listItemContent.appendChild(folderButtonContainer);
 
   const removeButton = document.createElement("i");
   removeButton.classList.add("course-box-button");
@@ -999,21 +1022,21 @@ function createFolderEntity(folder, attrs)
 
   const headerLabel = document.createElement("label");
   headerLabel.addEventListener("click", catchEvent);
+  headerLabel.classList.add("folder-box-text");
 
   const headerText = document.createElement("input");
   headerText.setAttribute("type","text");
   headerText.classList.add("folder-box-name");
-  headerLabel.classList.add("folder-box-text");
   headerText.value = folder.folder;
   
   headerText.addEventListener("change",(name) => 
   {
     name = name.srcElement.value;
-    if(_.some(course => {return course.folder == name},gSelectedCourses)==false)
+    if(_.some(course => {return course.folder == name},gSelectedCoursesAndFolders)==false)
     {
       let prevName = folder.folder;
       folder.folder = name;
-      for (let course of gSelectedCourses)
+      for (let course of gSelectedCoursesAndFolders)
       {
         if (course.folder == prevName)
         {
@@ -1254,7 +1277,6 @@ function updateSelectedCoursesList()
     selectedCoursesList.removeChild(selectedCoursesList.lastChild);
   }
 
-  gSelectedCoursesAndFolders = gSelectedCourses;
   let currentFolder = null;
   let folderEntity;
 
@@ -1289,7 +1311,7 @@ function updateSelectedCoursesList()
 
 function updateSchedule()
 {
-  const schedule = computeSchedule(gSelectedCourses);
+  const schedule = computeSchedule(gSelectedCoursesAndFolders);
   while (scheduleTable.getElementsByClassName("schedule-slot").length > 0)
   {
     const element =
@@ -1472,7 +1494,7 @@ function updateSelectedCoursesWrapper() {
 
 function showImportExportModal()
 {
-  importExportTextArea.value = JSON.stringify(gSelectedCourses, 2);
+  importExportTextArea.value = JSON.stringify(gSelectedCoursesAndFolders, 2);
   $("#import-export-modal").modal("show");
 }
 
@@ -1554,7 +1576,7 @@ function addCourse(course)
   course.selected = true;
   course.starred = false;
   course.folder = null;
-  gSelectedCourses.push(course);
+  gSelectedCoursesAndFolders.push(course);
   handleSelectedCoursesUpdate();
 }
 
@@ -1566,7 +1588,7 @@ function addFolder()
   let name = null;
   while (!name)
   {
-    if(_.some(course => {return course.folder == "Folder "+counter},gSelectedCourses)==false)
+    if(_.some(course => {return course.folder == "Folder "+counter},gSelectedCoursesAndFolders)==false)
     {
       name = "Folder "+ counter;
     } else {
@@ -1581,20 +1603,20 @@ function addFolder()
     courseCode: randomString,
     folder: name
   }
-  gSelectedCourses.push(folder);
+  gSelectedCoursesAndFolders.push(folder);
   handleSelectedCoursesUpdate();
  }
 
 function removeCourse(course)
 {
-  gSelectedCourses.splice(gSelectedCourses.indexOf(course), 1);
+  gSelectedCoursesAndFolders.splice(gSelectedCoursesAndFolders.indexOf(course), 1);
   handleSelectedCoursesUpdate();
 }
 
 function removeFolder(folder)
 {
-  gSelectedCourses.splice(gSelectedCourses.indexOf(folder), 1);
-  for (let course of gSelectedCourses)
+  gSelectedCoursesAndFolders.splice(gSelectedCoursesAndFolders.indexOf(folder), 1);
+  for (let course of gSelectedCoursesAndFolders)
   {
     if (course.folder == folder.folder)
     {
@@ -1610,9 +1632,9 @@ function readSelectedCoursesList()
   for (let entity of selectedCoursesList.children)
   {
     const idx = parseInt(entity.getAttribute("data-course-index"), 10);
-    if (!isNaN(idx) && idx >= 0 && idx < gSelectedCourses.length)
+    if (!isNaN(idx) && idx >= 0 && idx < gSelectedCoursesAndFolders.length)
     {
-      newSelectedCourses.push(gSelectedCourses[idx]);
+      newSelectedCourses.push(gSelectedCoursesAndFolders[idx]);
     }
     else
     {
@@ -1625,9 +1647,9 @@ function readSelectedCoursesList()
       for (let subentity of entity.lastChild.children)
       {
         const idx = parseInt(subentity.getAttribute("data-course-index"), 10);
-        if (!isNaN(idx) && idx >= 0 && idx < gSelectedCourses.length)
+        if (!isNaN(idx) && idx >= 0 && idx < gSelectedCoursesAndFolders.length)
         {
-          newSelectedCourses.push(gSelectedCourses[idx]);
+          newSelectedCourses.push(gSelectedCoursesAndFolders[idx]);
         }
         else
         {
@@ -1638,7 +1660,7 @@ function readSelectedCoursesList()
       }
     }
   }
-  gSelectedCourses = newSelectedCourses;
+  gSelectedCoursesAndFolders = newSelectedCourses;
   handleSelectedCoursesUpdate();
 }
 
@@ -1658,7 +1680,7 @@ function saveImportExportModalChanges()
     alert("Malformed JSON. Refusing to save.");
     return;
   }
-  gSelectedCourses = upgradeSelectedCourses(obj);
+  gSelectedCoursesAndFolders = upgradeSelectedCourses(obj);
   handleSelectedCoursesUpdate();
   $("#import-export-modal").modal("hide");
 }
@@ -1793,7 +1815,7 @@ async function retrieveCourseData()
     }
     apiData.until = apiResponse.until;
   }
-  for (const selectedCourse of gSelectedCourses)
+  for (const selectedCourse of gSelectedCoursesAndFolders)
   {
     if (_.has(selectedCourse.courseCode, apiData.data.courses))
     {
@@ -1847,7 +1869,7 @@ async function retrieveCourseDataUntilSuccessful()
 function writeStateToLocalStorage()
 {
   localStorage.setItem("apiData", JSON.stringify(gApiData));
-  localStorage.setItem("selectedCourses", JSON.stringify(gSelectedCourses));
+  localStorage.setItem("selectedCourses", JSON.stringify(gSelectedCoursesAndFolders));
   localStorage.setItem("scheduleTabSelected", gScheduleTabSelected);
   localStorage.setItem("showClosedCourses", gShowClosedCourses);
 }
@@ -1917,7 +1939,7 @@ function upgradeSelectedCourses(selectedCourses)
 function readStateFromLocalStorage()
 {
   gApiData = readFromLocalStorage("apiData", _.isObject, null);
-  gSelectedCourses = upgradeSelectedCourses(
+  gSelectedCoursesAndFolders = upgradeSelectedCourses(
     readFromLocalStorage("selectedCourses", _.isArray, [])
   );
   gScheduleTabSelected = readFromLocalStorage(
@@ -2017,7 +2039,7 @@ function downloadPDF()
   pdf.line(1.25 * 72, 0.5 * 72, 1.25 * 72, 0.5 * 72 + tableHeight);
 
   // course entities
-  for (const course of computeSchedule(gSelectedCourses))
+  for (const course of computeSchedule(gSelectedCoursesAndFolders))
   {
     for (const slot of course.courseSchedule)
     {
@@ -2147,7 +2169,7 @@ function uglyHack(input)
 
 function downloadICalFile()
 {
-  if (gSelectedCourses.length === 0)
+  if (gSelectedCoursesAndFolders.length === 0)
   {
     alert("You have not added any courses to export.");
     return;
@@ -2155,7 +2177,7 @@ function downloadICalFile()
   const cal = ics();
   let anyStarred = false;
   let anySelected = false;
-  for (let course of gSelectedCourses)
+  for (let course of gSelectedCoursesAndFolders)
   {
     if (course.selected && course.starred)
     {
@@ -2166,7 +2188,7 @@ function downloadICalFile()
       anySelected = true;
     }
   }
-  for (let course of gSelectedCourses)
+  for (let course of gSelectedCoursesAndFolders)
   {
     if ((!anySelected || course.selected) && (!anyStarred || course.starred))
     {

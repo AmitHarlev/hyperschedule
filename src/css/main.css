@@ -376,6 +376,10 @@ body {
     display: none;
 }
 
+#course-search-column .course-box-folder-button {
+    display: none;
+}
+
 #course-search-column .course-box-text {
     padding-left: 5px;
     padding-right: 30px;
@@ -481,6 +485,20 @@ body {
     top: 50%;
     width: 25px;
 }
+
+#selected-courses-column .course-box-folder-button {
+    display: block;
+    height: 50px;
+    margin-top: -25px;
+    line-height: 50px;
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    width: 25px;
+    font-size: 1.2em;
+}
+
+
 
 #selected-courses-column .folder-box-name {
     background: transparent;
