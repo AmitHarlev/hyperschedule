@@ -372,7 +372,7 @@ body {
     display: none;
 }
 
-#course-search-column .course-box-folder-id {
+#course-search-column .course-box-folder-name {
     display: none;
 }
 
@@ -395,6 +395,18 @@ body {
 /*** Selected courses listing ***/
 
 #selected-courses-column .course-box-select-label {
+    display: block;
+    height: 50px;
+    margin-top: -25px;
+    position: absolute;
+    line-height: 50px;
+    left: 5px;
+    top: 50%;
+    width: 25px;
+    text-align: center;
+}
+
+#selected-courses-column .course-box-collapse-label {
     display: block;
     height: 50px;
     margin-top: -25px;
@@ -461,13 +473,16 @@ body {
     width: 25px;
 }
 
-#selected-courses-column .course-box-folder-id {
-    display: block;
+#selected-courses-column .course-box-folder-name {
+    /* display: block;
     height: 25px;
     position: absolute;
     right: 50px;
     width: 30px;
-    top: 3px;
+    top: 3px; */
+    background: transparent;
+    border-width:0px;
+    border:none;
 }
 
 /** Modals **/

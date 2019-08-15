@@ -910,7 +910,7 @@ function createCourseEntity(course, attrs)
 
   const folderID = document.createElement("input");
   folderID.setAttribute("type", "text");
-  folderID.classList.add("course-box-folder-id");
+  folderID.classList.add("course-box-folder-name");
   folderID.value = course.folder
   
   folderID.addEventListener("change",(id) => 
@@ -954,10 +954,10 @@ function createFolderEntity(folder, attrs)
   listItem.classList.add("course-box");
   listItem.id = "folder";
 
-  const FolderHeader = document.createElement("div");
-  FolderHeader.classList.add("course-box-content");
+  const folderHeader = document.createElement("div");
+  folderHeader.classList.add("course-box-content");
   
-  FolderHeader.style["background-color"] = getCourseColor(folder);
+  folderHeader.style["background-color"] = getCourseColor(folder);
 
 
   const collapseLabel = document.createElement("label");
@@ -976,11 +976,11 @@ function createFolderEntity(folder, attrs)
 
   collapseLabel.addEventListener("click", catchEvent);
   collapseLabel.appendChild(collapseIcon);
-  FolderHeader.appendChild(collapseLabel);
+  folderHeader.appendChild(collapseLabel);
 
-  FolderHeader.appendChild(collapseLabel);
+  folderHeader.appendChild(collapseLabel);
 
-  FolderHeader.addEventListener("click", () => {
+  folderHeader.addEventListener("click", () => {
     if (containedCourses.style.display == "none")
     {
       containedCourses.style.display = "block";
@@ -995,27 +995,33 @@ function createFolderEntity(folder, attrs)
     }
   });
  
-  listItem.appendChild(FolderHeader);
+  listItem.appendChild(folderHeader);
 
-  const textBox = document.createElement("p");
-  textBox.classList.add("course-box-text");
-  FolderHeader.appendChild(textBox);
 
-  const courseNameNode = document.createTextNode(folder.folder);
-  textBox.appendChild(courseNameNode);
+  const headerLabel = document.createElement("label");
 
-  const folderID = document.createElement("input");
-  folderID.setAttribute("type", "text");
-  folderID.classList.add("course-box-folder-id");
-  folderID.value = folder.folder
+  const headerText = document.createElement("input");
+  headerText.setAttribute("type","text");
+  headerText.classList.add("course-box-folder-name");
+  headerLabel.classList.add("course-box-text");
+  headerText.value = folder.folder;
   
-  folderID.addEventListener("change",(id) => 
+  headerText.addEventListener("change",(name) => 
   {
-    folder.folder = id.srcElement.value
+    let prevName = folder.folder;
+    folder.folder = name.srcElement.value;
+    for (let course of gSelectedCourses)
+    {
+      if (course.folder == prevName)
+      {
+        course.folder = name.srcElement.value;
+      }
+    }
     updateSelectedCoursesList();
     updateSchedule();
   });
-  FolderHeader.appendChild(folderID);
+  headerLabel.appendChild(headerText);
+  folderHeader.appendChild(headerLabel);
 
   const removeButton = document.createElement("i");
   removeButton.classList.add("course-box-button");
@@ -1026,7 +1032,7 @@ function createFolderEntity(folder, attrs)
     removeFolder(folder);
   });
   removeButton.addEventListener("click", catchEvent);
-  FolderHeader.appendChild(removeButton);
+  folderHeader.appendChild(removeButton);
 
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
@@ -1553,7 +1559,7 @@ function addFolder()
     starred: false,
     open: true,
     courseCode: randomString,
-    folder: "1"
+    folder: "Folder 1"
   }
   gSelectedCourses.push(folder);
   handleSelectedCoursesUpdate();
