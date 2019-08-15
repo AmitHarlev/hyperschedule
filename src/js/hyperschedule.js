@@ -954,27 +954,52 @@ function createFolderEntity(folder, attrs)
   listItem.classList.add("course-box");
   listItem.id = "folder";
 
-  const listItemContent = document.createElement("div");
-  listItemContent.classList.add("course-box-content");
+  const FolderHeader = document.createElement("div");
+  FolderHeader.classList.add("course-box-content");
   
-  listItemContent.style["background-color"] = getCourseColor(folder);
+  FolderHeader.style["background-color"] = getCourseColor(folder);
 
-  listItemContent.addEventListener("click", () => {
+
+  const collapseLabel = document.createElement("label");
+  collapseLabel.classList.add("course-box-collapse-label");
+
+  const collapseIcon = document.createElement("i");
+  collapseIcon.classList.add("course-box-collapse-icon");
+  collapseIcon.classList.add("icon");
+  if (!!folder.open) {
+    collapseIcon.classList.add("ion-android-arrow-dropdown-circle");
+  }
+  else
+  {
+    collapseIcon.classList.add("ion-android-arrow-dropright-circle");
+  }
+
+  collapseLabel.addEventListener("click", catchEvent);
+  collapseLabel.appendChild(collapseIcon);
+  FolderHeader.appendChild(collapseLabel);
+
+  FolderHeader.appendChild(collapseLabel);
+
+  FolderHeader.addEventListener("click", () => {
     if (containedCourses.style.display == "none")
     {
       containedCourses.style.display = "block";
+      collapseIcon.classList.remove("ion-android-arrow-dropright-circle");
+      collapseIcon.classList.add("ion-android-arrow-dropdown-circle")
       folder.open = true;
     } else {
       containedCourses.style.display = "none";
+      collapseIcon.classList.add("ion-android-arrow-dropright-circle");
+      collapseIcon.classList.remove("ion-android-arrow-dropdown-circle")
       folder.open = false;
     }
   });
  
-  listItem.appendChild(listItemContent);
+  listItem.appendChild(FolderHeader);
 
   const textBox = document.createElement("p");
   textBox.classList.add("course-box-text");
-  listItemContent.appendChild(textBox);
+  FolderHeader.appendChild(textBox);
 
   const courseNameNode = document.createTextNode(folder.folder);
   textBox.appendChild(courseNameNode);
@@ -990,7 +1015,7 @@ function createFolderEntity(folder, attrs)
     updateSelectedCoursesList();
     updateSchedule();
   });
-  listItemContent.appendChild(folderID);
+  FolderHeader.appendChild(folderID);
 
   const removeButton = document.createElement("i");
   removeButton.classList.add("course-box-button");
@@ -1001,7 +1026,7 @@ function createFolderEntity(folder, attrs)
     removeFolder(folder);
   });
   removeButton.addEventListener("click", catchEvent);
-  listItemContent.appendChild(removeButton);
+  FolderHeader.appendChild(removeButton);
 
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
