@@ -957,16 +957,17 @@ function createFolderEntity(folder, attrs)
   const listItemContent = document.createElement("div");
   listItemContent.classList.add("course-box-content");
   
-  listItemContent.style["background-color"] = 'grey'
+  listItemContent.style["background-color"] = getCourseColor(folder);
 
   listItemContent.addEventListener("click", () => {
     if (containedCourses.style.display == "none")
     {
       containedCourses.style.display = "block";
+      folder.open = true;
     } else {
       containedCourses.style.display = "none";
+      folder.open = false;
     }
-    
   });
  
   listItem.appendChild(listItemContent);
@@ -1005,6 +1006,12 @@ function createFolderEntity(folder, attrs)
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
   containedCourses.classList.add("folder-list");
+
+  if (!folder.open)
+  {
+    containedCourses.style.display = "none";
+  }
+
   listItem.appendChild(containedCourses);
 
   containedCourses.addEventListener("sortupdate", readSelectedCoursesList);
@@ -1514,14 +1521,18 @@ function addCourse(course)
 
 function addFolder()
 {
+  const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
   let folder = {
     selected: false,
     starred: false,
+    open: true,
+    courseCode: randomString,
     folder: "1"
-  };
+  }
   gSelectedCourses.push(folder);
   handleSelectedCoursesUpdate();
-}
+ }
 
 function removeCourse(course)
 {
