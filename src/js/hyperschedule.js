@@ -666,7 +666,7 @@ function attachListeners()
   sortable(".folder-list", {
     forcePlaceholderSize: true,
     placeholder: createCourseEntity("placeholder").outerHTML,
-    acceptFrom: '.sortable-list'
+    acceptFrom: '.sortable-list, .folder-list'
   });
   printButton.addEventListener("click", downloadPDF);
   addFolderButton.addEventListener("click",addFolder);
@@ -958,6 +958,16 @@ function createFolderEntity(folder, attrs)
   listItemContent.classList.add("course-box-content");
   
   listItemContent.style["background-color"] = 'grey'
+
+  listItemContent.addEventListener("click", () => {
+    if (containedCourses.style.display == "none")
+    {
+      containedCourses.style.display = "block";
+    } else {
+      containedCourses.style.display = "none";
+    }
+    
+  });
  
   listItem.appendChild(listItemContent);
 
@@ -987,7 +997,7 @@ function createFolderEntity(folder, attrs)
   removeButton.classList.add("icon");
   removeButton.classList.add("ion-close");
   removeButton.addEventListener("click", () => {
-    removeCourse(folder);
+    removeFolder(folder);
   });
   removeButton.addEventListener("click", catchEvent);
   listItemContent.appendChild(removeButton);
@@ -1516,6 +1526,19 @@ function addFolder()
 function removeCourse(course)
 {
   gSelectedCourses.splice(gSelectedCourses.indexOf(course), 1);
+  handleSelectedCoursesUpdate();
+}
+
+function removeFolder(folder)
+{
+  gSelectedCourses.splice(gSelectedCourses.indexOf(folder), 1);
+  for (let course of gSelectedCourses)
+  {
+    if (course.folder == folder.folder)
+    {
+      course.folder = null;
+    }
+  }
   handleSelectedCoursesUpdate();
 }
 
