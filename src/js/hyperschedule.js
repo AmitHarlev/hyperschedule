@@ -1037,6 +1037,7 @@ function createFolderEntity(folder, attrs)
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
   containedCourses.classList.add("folder-list");
+  containedCourses.setAttribute("style","list-style:none");
 
   if (!folder.open)
   {
