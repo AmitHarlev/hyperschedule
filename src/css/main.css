@@ -372,7 +372,7 @@ body {
     display: none;
 }
 
-#course-search-column .course-box-folder-name {
+#course-search-column .folder-box-name {
     display: none;
 }
 
@@ -462,6 +462,12 @@ body {
     padding-right: 30px;
 }
 
+#selected-courses-column .folder-box-text {
+    padding-left: 55px;
+    padding-right: 30px;
+    /* width: 30px; */
+}
+
 #selected-courses-column .course-box-remove-button {
     display: block;
     height: 50px;
@@ -473,7 +479,7 @@ body {
     width: 25px;
 }
 
-#selected-courses-column .course-box-folder-name {
+#selected-courses-column .folder-box-name {
     /* display: block;
     height: 25px;
     position: absolute;

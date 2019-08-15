@@ -910,7 +910,7 @@ function createCourseEntity(course, attrs)
 
   const folderID = document.createElement("input");
   folderID.setAttribute("type", "text");
-  folderID.classList.add("course-box-folder-name");
+  folderID.classList.add("folder-box-name");
   folderID.value = course.folder
   
   folderID.addEventListener("change",(id) => 
@@ -1002,8 +1002,8 @@ function createFolderEntity(folder, attrs)
 
   const headerText = document.createElement("input");
   headerText.setAttribute("type","text");
-  headerText.classList.add("course-box-folder-name");
-  headerLabel.classList.add("course-box-text");
+  headerText.classList.add("folder-box-name");
+  headerLabel.classList.add("folder-box-text");
   headerText.value = folder.folder;
   
   headerText.addEventListener("change",(name) => 
