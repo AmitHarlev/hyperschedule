@@ -463,9 +463,12 @@ body {
 }
 
 #selected-courses-column .folder-box-text {
+    display: inline-block;
+    margin: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 55px;
     padding-right: 30px;
-    /* width: 30px; */
 }
 
 #selected-courses-column .course-box-remove-button {
@@ -480,12 +483,6 @@ body {
 }
 
 #selected-courses-column .folder-box-name {
-    /* display: block;
-    height: 25px;
-    position: absolute;
-    right: 50px;
-    width: 30px;
-    top: 3px; */
     background: transparent;
     border-width:0px;
     border:none;

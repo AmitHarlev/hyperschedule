@@ -1008,17 +1008,24 @@ function createFolderEntity(folder, attrs)
   
   headerText.addEventListener("change",(name) => 
   {
-    let prevName = folder.folder;
-    folder.folder = name.srcElement.value;
-    for (let course of gSelectedCourses)
+    name = name.srcElement.value;
+    if(_.some(course => {return course.folder == name},gSelectedCourses)==false)
     {
-      if (course.folder == prevName)
+      let prevName = folder.folder;
+      folder.folder = name;
+      for (let course of gSelectedCourses)
       {
-        course.folder = name.srcElement.value;
+        if (course.folder == prevName)
+        {
+          course.folder = name;
+        }
       }
+      updateSelectedCoursesList();
+      updateSchedule();
+    } else {
+      alert("Can't have two folders with the same name!");
+      updateSelectedCoursesList();
     }
-    updateSelectedCoursesList();
-    updateSchedule();
   });
   headerLabel.appendChild(headerText);
   folderHeader.appendChild(headerLabel);
@@ -1555,12 +1562,24 @@ function addFolder()
 {
   const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
+  let counter = 1;
+  let name = null;
+  while (!name)
+  {
+    if(_.some(course => {return course.folder == "Folder "+counter},gSelectedCourses)==false)
+    {
+      name = "Folder "+ counter;
+    } else {
+      counter += 1;
+    }
+  }
+
   let folder = {
     selected: false,
     starred: false,
     open: true,
     courseCode: randomString,
-    folder: "Folder 1"
+    folder: name
   }
   gSelectedCourses.push(folder);
   handleSelectedCoursesUpdate();
