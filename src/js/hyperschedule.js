@@ -974,7 +974,6 @@ function createFolderEntity(folder, attrs)
     collapseIcon.classList.add("ion-android-arrow-dropright-circle");
   }
 
-  collapseLabel.addEventListener("click", catchEvent);
   collapseLabel.appendChild(collapseIcon);
   folderHeader.appendChild(collapseLabel);
 
@@ -999,6 +998,7 @@ function createFolderEntity(folder, attrs)
 
 
   const headerLabel = document.createElement("label");
+  headerLabel.addEventListener("click", catchEvent);
 
   const headerText = document.createElement("input");
   headerText.setAttribute("type","text");
@@ -1037,7 +1037,7 @@ function createFolderEntity(folder, attrs)
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
   containedCourses.classList.add("folder-list");
-  containedCourses.setAttribute("style","list-style:none");
+  // containedCourses.setAttribute("style","list-style:none");
 
   if (!folder.open)
   {
