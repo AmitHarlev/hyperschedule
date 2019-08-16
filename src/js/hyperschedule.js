@@ -34,6 +34,8 @@ const importExportDataButton = document.getElementById("import-export-data-butto
 const printButton = document.getElementById("print-button");
 
 const addFolderButton = document.getElementById("add-folder-button");
+const closeRightClickMenu = document.getElementById("close-right-click-menu")
+const rightClickMenu = document.getElementById("right-click-menu");
 
 const courseDescriptionBox = document.getElementById("course-description-box");
 const courseDescriptionBoxOuter = document.getElementById("course-description-box-outer");
@@ -648,6 +650,10 @@ async function retrieveAPI(endpoint)
 function attachListeners()
 {
   document.addEventListener("DOMContentLoaded", onResize);
+  document.addEventListener("click",() => {
+    rightClickMenu.classList.add("hide-right-click-menu");
+    rightClickMenu.classList.remove("show-right-click-menu");
+  });
 
   courseSearchToggle.addEventListener("click", displayCourseSearchColumn);
   scheduleToggle.addEventListener("click", displayScheduleColumn);
@@ -669,6 +675,18 @@ function attachListeners()
   });
   printButton.addEventListener("click", downloadPDF);
   addFolderButton.addEventListener("click",addFolder);
+  selectedCoursesList.addEventListener("contextmenu",(event) => {
+    rightClickMenu.classList.add("show-right-click-menu"); 
+    rightClickMenu.classList.remove("hide-right-click-menu");
+    rightClickMenu.style.top =  event.clientY + 'px';
+    rightClickMenu.style.left = event.clientX + 'px';
+    window.event.returnValue = false;
+  });
+  closeRightClickMenu.addEventListener("click",() => {
+    rightClickMenu.classList.add("hide-right-click-menu");
+    rightClickMenu.classList.remove("show-right-click-menu");
+  })
+
   selectedCoursesList.addEventListener("sortupdate", readSelectedCoursesList);
   selectedCoursesList.addEventListener("sortstart", () => {
     gCurrentlySorting = true;

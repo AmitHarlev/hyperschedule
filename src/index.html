@@ -107,10 +107,6 @@
         </div>
       </div>
 
-      <div id="add-folder-button-wrapper">
-          <button type="button" id="add-folder-button" class="btn"><i class="icon ion-folder"></i></button>
-      </div>
-
       <div id="selected-courses-wrapper">
         <div id="course-description-box-outer" class="toolbar">
           <div id="course-description-box">
@@ -187,6 +183,18 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- initially hidden right-click menu -->
+    <div class="hide-right-click-menu" id="right-click-menu">
+      <ul class="list-group">
+        <li class="list-group-item">
+            <span id="add-folder-button" class="btn">Add Folder</span>
+        </li>
+        <li class="list-group-item">
+            <span id="close-right-click-menu" class="btn">Close</span>
+        </li>
+      </ul>
     </div>
 
     <!-- curl -s <src> | shasum -a 384 | cut -f1 -d' ' | xxd -r -p | base64 | sed 's/.*/integrity="sha384-&"/' -->
