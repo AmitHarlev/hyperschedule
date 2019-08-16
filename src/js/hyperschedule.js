@@ -917,8 +917,6 @@ function createCourseEntity(course, attrs)
   folderButton.classList.add("course-box-folder-button")
   folderButton.classList.add("dropdown-toggle");
 
-  // folderButton.addEventListener("click", catchEvent);
-
   folderButtonContainer.appendChild(folderButton);
 
   const folderIcon = document.createElement("i");
@@ -1091,7 +1089,6 @@ function createFolderEntity(folder, attrs)
   const containedCourses = document.createElement("ul");
   containedCourses.classList.add("course-box-content");
   containedCourses.classList.add("folder-list");
-  // containedCourses.setAttribute("style","list-style:none");
 
   if (!folder.open)
   {
@@ -1306,17 +1303,21 @@ function updateSelectedCoursesList()
 
   let coursesAndFoldersAdded = 0;
 
+  const newSelectedCourses = [];
+
   for (let course of gSelectedCoursesAndFolders){
     if (course.isFolder)
     {
       let idx = coursesAndFoldersAdded;
       folderEntity = createFolderEntity(course, { idx });
+      newSelectedCourses.push(course);
       coursesAndFoldersAdded += 1;
       for (let comparisonCourse of gSelectedCoursesAndFolders)
       {
         if(!comparisonCourse.isFolder && comparisonCourse.folder == course.folder){
           let idx = coursesAndFoldersAdded;
           folderEntity.lastChild.appendChild(createCourseEntity(comparisonCourse, { idx }));
+          newSelectedCourses.push(comparisonCourse);
           coursesAndFoldersAdded += 1;
         }
       }
@@ -1324,79 +1325,13 @@ function updateSelectedCoursesList()
     } else if (course.folder == null) {
       let idx = coursesAndFoldersAdded;
       selectedCoursesList.appendChild(createCourseEntity(course, { idx }));
+      newSelectedCourses.push(course);
       coursesAndFoldersAdded += 1;
     }
   }
 
-  // while (coursesAndFoldersAdded < gSelectedCoursesAndFolders.length){
-  //   const course = gSelectedCoursesAndFolders[coursesAndFoldersAdded + skip];
-  //   if (course.isFolder)
-  //   {
-  //     let idx = coursesAndFoldersAdded;
-  //     folderEntity = createFolderEntity(course, { idx });
-  //     coursesAndFoldersAdded += 1;
-  //     for (let comparisonCourse of gSelectedCoursesAndFolders)
-  //     {
-  //       if(!comparisonCourse.isFolder && comparisonCourse.folder == course.folder){
-  //         let idx = coursesAndFoldersAdded;
-  //         folderEntity.lastChild.appendChild(createCourseEntity(comparisonCourse, { idx }));
-  //         coursesAndFoldersAdded += 1;
-  //       }
-  //     }
-  //     selectedCoursesList.appendChild(folderEntity);
-  //   } else if (course.folder == null) {
-  //     let idx = coursesAndFoldersAdded;
-  //     selectedCoursesList.appendChild(createCourseEntity(course, { idx }));
-  //     coursesAndFoldersAdded += 1;
-  //   } else {
-  //     skip += 1;
-  //   }
-  // }
+  gSelectedCoursesAndFolders = newSelectedCourses;
 
-  // for (let idx = 0; idx < gSelectedCoursesAndFolders.length; ++idx)
-  // {
-  //   const course = gSelectedCoursesAndFolders[idx];
-  //   if (course.isFolder)
-  //   {
-  //     folderEntity = createFolderEntity(course, { idx });
-  //     let counter = 1;
-  //     for (let comparisonCourse in gSelectedCoursesAndFolders)
-  //     {
-  //       if(!comparisonCourse.isFolder && comparisonCourse.folder == course.folder){
-  //         idx = 
-  //         folderEntity.lastChild.appendChild(createCourseEntity(course, {  }));
-  //       }
-  //     }
-  //   } else if (course.folder == null) {
-  //     selectedCoursesList.appendChild(createCourseEntity(course, { idx }));
-  //   }
-
-
-  //   if (course.folder && course.folder != currentFolder)
-  //   {
-  //     if(currentFolder != null){
-  //       selectedCoursesList.appendChild(folderEntity)
-  //       currentFolder = null;
-  //     }
-  //     folderEntity = createFolderEntity(course, { idx });
-  //     currentFolder = course.folder;
-  //   } 
-    
-    
-  //   else if (course.folder && course.folder == currentFolder) {
-  //     folderEntity.lastChild.appendChild(createCourseEntity(course, { idx }));
-  //   } else {
-  //     if(currentFolder != null){
-  //       selectedCoursesList.appendChild(folderEntity)
-  //       currentFolder = null;
-  //     }
-  //     selectedCoursesList.appendChild(createCourseEntity(course, { idx }));
-  //   }
-  //   if(currentFolder != null && idx == gSelectedCoursesAndFolders.length-1){
-  //     selectedCoursesList.appendChild(folderEntity);
-  //     currentFolder = null;
-  //   }
-  // }
   sortable(".sortable-list");
   sortable(".folder-list");
 }
