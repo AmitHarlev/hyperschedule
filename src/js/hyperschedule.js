@@ -499,12 +499,20 @@ function courseInSameFolder(course1, course2)
 
 function coursesMutuallyExclusive(course1, course2)
 {
+  if(course1.isFolder || course2.isFolder)
+  {
+    return false;
+  }
   return arraysEqual(course1.courseMutualExclusionKey,
                      course2.courseMutualExclusionKey);
 }
 
 function coursesConflict(course1, course2)
 {
+  if(course1.isFolder || course2.isFolder)
+  {
+    return false;
+  }
   for (let slot1 of course1.courseSchedule)
   {
     for (let slot2 of course2.courseSchedule)
@@ -1284,8 +1292,8 @@ function updateCourseSearchResults(attrs)
     if (index++ < courseListIndex)
       return null;
     const matchesQuery = courseMatchesSearchQuery(course, query);
-    const conflicting = _.some(comparisonCourse => {return coursesConflict(course,comparisonCourse);},gSelectedCoursesAndFolders) || false;
-    if (matchesQuery && (gShowClosedCourses || !isCourseClosed(course) && (gShowConflictingCourses || !conflicting)))
+    const conflicting = _.some(comparisonCourse => {return coursesConflict(course,comparisonCourse)},gSelectedCoursesAndFolders);
+    if (matchesQuery && (gShowClosedCourses || !isCourseClosed(course)) && (gShowConflictingCourses || !conflicting))
     {
       if (numAdded >= numToShow)
       {
@@ -2012,6 +2020,9 @@ function readStateFromLocalStorage()
   );
   gShowClosedCourses = readFromLocalStorage(
     "showClosedCourses", _.isBoolean, true
+  );
+  gShowConflictingCourses = readFromLocalStorage(
+    "showConflictingCourses",_.isBoolean, true
   );
 }
 
