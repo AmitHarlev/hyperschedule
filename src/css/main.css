@@ -486,19 +486,27 @@ body {
     width: 25px;
 }
 
-#selected-courses-column .course-box-folder-button {
+#selected-courses-column .course-box-folder-button-container {
     display: block;
     height: 50px;
     margin-top: -25px;
     line-height: 50px;
     position: absolute;
-    right: 25px;
+    right: 35px;
     top: 50%;
     width: 25px;
     font-size: 1.2em;
 }
 
+#selected-courses-column .course-box-folder-button {
+    background-color: transparent;
+    border-width:0px;
+    border: none;
+}
 
+#selected-courses-column .dropdown-toggle::after {
+    display:none;
+}
 
 #selected-courses-column .folder-box-name {
     background: transparent;
